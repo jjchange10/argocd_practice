@@ -27,7 +27,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+        PR_NUMBER=1
         COMMENT_BODY="Build result: Helloworld"
         curl -s -H "Authorization: token $GITHUB_TOKEN" \
              -X POST \
