@@ -19,12 +19,6 @@ jobs:
       with:
         version: 3.13.0
     
-    - name: Install Kustomize
-      uses: asdf-vm/actions/install@v3
-      with:
-        tool_version: |
-          kustomize 5.1.0
-    
     - name: Print Helloworld
       run: echo "Helloworld"
     
