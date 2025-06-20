@@ -1,0 +1,7 @@
+## Argo Configs
+configs:
+  repositories:
+    private-repo:
+      url: https://github.com/jjchange10/argocd_practice.git
+      username: jjchange10
+      type: git
