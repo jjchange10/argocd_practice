@@ -3,14 +3,8 @@ name: ESO Application CI
 on:
   push:
     branches: [ "main" ]
-    paths:
-      - 'applications/eso.yaml'
-      - 'helm/argocd/eso/**'
   pull_request:
     branches: [ "main" ]
-    paths:
-      - 'applications/eso.yaml'
-      - 'helm/argocd/eso/**'
   workflow_dispatch:
 
 jobs:
