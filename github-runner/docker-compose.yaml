@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  github-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: github-actions-runner
+    privileged: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./runner-config:/home/runner/config
+    environment:
+      - RUNNER_ALLOW_RUNASROOT=1
+    restart: unless-stopped

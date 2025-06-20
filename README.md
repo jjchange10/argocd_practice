@@ -4,7 +4,7 @@ kind create cluster --config kind.yaml --name argocd-practice
 
 ## argoCDインストール
 ```bash
-helm upgrade --install argocd argo/argo-cd --create-name=true -n argocd -f helm/argocd/values.yaml
+helm upgrade --install argocd argo/argo-cd --create-namespace=true -n argocd -f helm/argocd/values.yaml
 ```
 
 ```bash
