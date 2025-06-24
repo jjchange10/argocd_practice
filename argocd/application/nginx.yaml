@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: nginx
+  source:
+    path: helm/nginx
+    repoURL: https://github.com/jjchange10/argocd_practice
+    targetRevision: main
+    helm:
+      releaseName: nginx
+      valueFiles:
+        - values.yaml
+    
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
