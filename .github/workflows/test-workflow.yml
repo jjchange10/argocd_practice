@@ -23,10 +23,12 @@ jobs:
         touch testfile && rm testfile
 
     - name: "Set up ArgoCD CLI"
-      uses: clowdhaus/argo-cd-action/@main
-      with:
-        version: 3.0.6
-        command: version
+      run: |
+        curl -fL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+        mv argocd-linux-amd64 argocd
+        chmod +x argocd
+        sudo mv argocd /usr/local/bin/argocd
+        argocd version --client
 
     - name: CI Kubernetes ArgoCD
       run: |
