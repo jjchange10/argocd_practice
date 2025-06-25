@@ -42,7 +42,7 @@ ARGOCD_PASSWORD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o js
 argocd login "${ARGOCD_SERVER}" --username admin --password "${ARGOCD_PASSWORD}" --insecure
 
 if [ $? -ne 0 ]; then
-  echo "[ERROR] Failed to login to ArgoCD"
+  echo "[ERROR] Failed to login to Argo"
   exit 1
 fi
 
