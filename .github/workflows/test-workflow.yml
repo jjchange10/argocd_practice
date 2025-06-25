@@ -31,4 +31,4 @@ jobs:
 
     - name: CI Kubernetes ArgoCD
       run: |
-        ./bash/ci-kubernetes-argocd.sh helm stg
+        sh ./bash/ci-kubernetes-argocd.sh helm stg
