@@ -27,7 +27,7 @@ jobs:
         curl -fL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
         mv argocd-linux-amd64 argocd
         chmod +x argocd
-        sudo mv argocd /usr/local/bin/argocd
+        sudo mv argocd /usr/bin/argocd
         argocd version --client
 
     - name: CI Kubernetes ArgoCD
