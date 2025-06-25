@@ -24,10 +24,10 @@ jobs:
 
     - name: "Set up ArgoCD CLI"
       run: |
-        curl -fL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+        curl -fL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/download/v3.0.6/argocd-linux-amd64
         mv argocd-linux-amd64 argocd
         chmod +x argocd
-        sudo mv argocd /usr/bin/argocd
+        sudo mv argocd /usr/local/bin/
         env
         argocd version --client
 
