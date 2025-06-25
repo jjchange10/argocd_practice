@@ -30,5 +30,4 @@ jobs:
         argocd version --client
 
     - name: CI Kubernetes ArgoCD
-      run: |
-        sh ./bash/ci-kubernetes-argocd.sh helm stg
+      run: ./bash/ci-kubernetes-argocd.sh helm stg
