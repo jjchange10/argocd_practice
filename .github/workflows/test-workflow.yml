@@ -1,10 +1,10 @@
-name: [ARC] argocd CI
+name: "[ARC] argocd CI"
 on:
   workflow_dispatch:
 
 jobs:
   argocd-ci:
-    name: [ARC] argocd CI
+    name: "[ARC] argocd CI"
     runs-on: arc-runner-set
     steps:
     - name: Checkout
@@ -12,7 +12,7 @@ jobs:
       with:
         fetch-depth: 0
     
-    - name: Install Argo CD CLI
+    - name: "Install Argo CD CLI"
       run: |
         curl -sSL -o argocd \
           https://github.com/argoproj/argo-cd/releases/download/v3.0.6/argocd-linux-amd64
