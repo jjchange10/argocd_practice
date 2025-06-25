@@ -1,10 +1,29 @@
-name: Actions Runner Controller Demo
+name: [ARC] argocd CI
 on:
   workflow_dispatch:
 
 jobs:
-  Explore-GitHub-Actions:
-    # You need to use the INSTALLATION_NAME from the previous step
+  argocd-ci:
     runs-on: arc-runner-set
     steps:
-    - run: echo "🎉 This job uses runner scale set runners!"
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Install Argo CD CLI
+      run: |
+        curl -sSL -o argocd \
+          https://github.com/argoproj/argo-cd/releases/download/v3.0.6/argocd-linux-amd64
+        chmod +x argocd
+        sudo mv argocd /usr/local/bin/
+    
+    # https://github.com/google-github-actions/setup-gcloud
+    - name: "Set up Cloud SDK"
+      uses: "google-github-actions/setup-gcloud@v2"
+      with:
+        install_components: "gke-gcloud-auth-plugin,kubectl"
+
+    - name: CI Kubernetes ArgoCD
+      run: |
+        ./ci-kubernetes-argocd.sh helm stg
