@@ -4,6 +4,7 @@ on:
 
 jobs:
   argocd-ci:
+    name: [ARC] argocd CI
     runs-on: arc-runner-set
     steps:
     - name: Checkout
