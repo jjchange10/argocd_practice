@@ -16,7 +16,7 @@ jobs:
     - name: "Set up Cloud SDK"
       uses: "google-github-actions/setup-gcloud@v2"
       with:
-        install_components: "gke-gcloud-auth-plugin,kubectl"
+        install_components: "kubectl"
 
     - name: "test"
       run: |
@@ -28,6 +28,7 @@ jobs:
         mv argocd-linux-amd64 argocd
         chmod +x argocd
         sudo mv argocd /usr/bin/argocd
+        env
         argocd version --client
 
     - name: CI Kubernetes ArgoCD
