@@ -14,7 +14,7 @@ spec:
       chart: external-secrets
       helm:
         valueFiles:
-          - $values/helm/eso/values.yaml
+          - $values/helm/external-secrets/values.yaml
     - repoURL: https://github.com/jjchange10/argocd_practice
       targetRevision: main
       ref: values
