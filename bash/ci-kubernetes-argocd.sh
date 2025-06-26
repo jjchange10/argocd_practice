@@ -36,6 +36,7 @@ echo "[INFO] Logging in to ArgoCD..."
 ARGOCD_SERVER="${ARGOCD_SERVER:-localhost:8080}"
 
 # ArgoCD の管理者パスワードを取得
+
 ARGOCD_PASSWORD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
 
 # ArgoCD CLI でログイン
