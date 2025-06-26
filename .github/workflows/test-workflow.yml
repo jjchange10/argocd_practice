@@ -26,11 +26,11 @@ jobs:
         argocd version --client
 
     - name: Set up Kubeconfig
-        run: |
-          mkdir -p ${HOME}/.kube
-          echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > ${HOME}/.kube/config
-          chmod 600 ${HOME}/.kube/config
-          kubectl version
+      run: |
+        mkdir -p ${HOME}/.kube
+        echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > ${HOME}/.kube/config
+        chmod 600 ${HOME}/.kube/config
+        kubectl version
 
     - name: CI Kubernetes ArgoCD
       run: ./bash/ci-kubernetes-argocd.sh helm stg
