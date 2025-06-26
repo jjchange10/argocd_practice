@@ -18,10 +18,6 @@ jobs:
       with:
         install_components: "kubectl"
 
-    - name: "test"
-      run: |
-        touch testfile && rm testfile
-
     - name: "Set up ArgoCD CLI"
       run: |
         curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/download/v3.0.6/argocd-linux-amd64
