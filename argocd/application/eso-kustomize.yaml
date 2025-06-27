@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: external-secrets-kustomize
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: external-secrets-kustomize
+  source:
+    repoURL: 'https://github.com/jjchange10/argocd_practice'
+    targetRevision: main
+    path: applications/eso-kustomize/overlays
+    
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
