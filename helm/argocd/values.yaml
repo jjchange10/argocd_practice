@@ -5,3 +5,12 @@ configs:
       url: https://github.com/jjchange10/argocd_practice.git
       username: jjchange10
       type: git
+  cmp:
+    create: true
+    plugins:
+      kustomize-helmcharts:
+        generate:
+          command: [sh, -c]
+          args:
+            - |
+              kustomize build --enable-helm
