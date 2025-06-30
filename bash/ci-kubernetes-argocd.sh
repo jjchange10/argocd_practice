@@ -42,33 +42,30 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# Process each detected service
-for service_name in "${service_names[@]}"; do
-  echo "[INFO] Processing service: ${service_name}"
+# Git差分をチェックして変更されたディレクトリを検出
+echo "[INFO] Checking git diff for changed directories"
+
+# 変更されたファイルのリストを取得（メインブランチとの差分）
+changed_files=$(git diff --name-only HEAD~1 HEAD $workdir)
+
+if [ -z "$changed_files" ]; then
+  echo "[INFO] No changes detected"
+  exit 0
+fi
+
+echo "[INFO] Changed files:"
+echo "$changed_files"
+
+# 変更されたディレクトリから対応するアプリケーションファイルを検出
+app_files=()
+
+for file in $changed_files; do
+  # ファイルのディレクトリパスを取得
+  dir=$(dirname "$file")
   
-  argocd app get ${service_name}
-  if [ $? -ne 0 ]; then
-    echo "[ERROR] Failed to get ArgoCD app: ${service_name}"
-    continue
-  fi
+  # applicationsディレクトリ配下でvaluesFile参照を持つファイルを検索し、ディレクトリのみ取得
+  matching_dirs=$(grep -rl "valuesFile:.*${dir}" applications/ 2>/dev/null | xargs dirname | sort -u)
 
-  echo "[INFO] Diffing ArgoCD app: ${service_name}"
-  result=$(argocd app diff ${service_name} --source-positions 2 --revisions development)
-
-  # ArgoCD app diffの終了コードを取得
-  diff_exit_code=$?
-
-  if [ $diff_exit_code -eq 1 ]; then
-    echo "[INFO] ArgoCD app diff result:"
-    echo "$result"
-    echo "[INFO] Differences found - proceeding with sync"
-    
-    # 差分がある場合はsyncを実行
-    echo "[INFO] Syncing ArgoCD app: ${service_name}"
-    
-  elif [ $diff_exit_code -eq 0 ]; then
-    echo "[INFO] No differences found for ${service_name} - app is already in sync"
-  else
-    echo "[ERROR] Failed to diff ArgoCD app: ${service_name} (exit code: $diff_exit_code)"
-  fi
+  result=$(kustomize build --enable-helm --load-restrictor=LoadRestrictionsNone ${matching_dirs} | kubectl diff -f -)
+  echo "$result"
 done
