@@ -5,12 +5,66 @@ configs:
       url: https://github.com/jjchange10/argocd_practice.git
       username: jjchange10
       type: git
-  cmp:
-    create: true
-    plugins:
-      kustomize-helmcharts:
-        generate:
-          command: [sh, -c]
-          args:
-            - |
-              kustomize build --enable-helm
+  cm:
+    kustomize.buildOptions: "--enable-helm"
+#   cmp:
+#     create: true
+#     plugins:
+#       kustomize-helmcharts:
+#         generate:
+#           command:
+#             - sh
+#             - -c
+#           args:
+#             - |
+#               kustomize build --enable-helm .
+        
+# repoServer:
+#   env: 
+#     - name: PATH
+#       value: "/custom-tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+#   extraContainers:
+#     - name: cmp-my-plugin
+#       command:
+#         - "/var/run/argocd/argocd-cmp-server"
+#       image: alpine:latest
+#       env:
+#         - name: PATH
+#           value: "/custom-tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+#       securityContext:
+#         runAsNonRoot: true
+#         runAsUser: 999
+#       volumeMounts: 
+#         - name: argocd-cmp-cm
+#           mountPath: /home/argocd/cmp-server/config/plugin.yaml
+#           subPath: kustomize-helmcharts.yaml
+#         - name: plugins
+#           mountPath: /home/argocd/cmp-server/plugins
+#         - name: var-files
+#           mountPath: /var/run/argocd
+#         - name: custom-tools
+#           mountPath: /custom-tools
+#   initContainers: ## TODO: Helmをインストールしないとエラーになるのでインストールする 
+#     - name: kustomize-installer
+#       image: ubuntu
+#       command:
+#         - /bin/sh
+#         - -c
+#       args:
+#         - |
+#           apt-get update
+#           apt-get install -y curl
+#           curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+#           mv kustomize /custom-tools/
+#       volumeMounts:
+#         - name: custom-tools
+#           mountPath: /custom-tools
+#   volumeMounts:
+#     - name: custom-tools
+#       mountPath: /custom-tools
+#   volumes:
+#     - name: argocd-cmp-cm
+#       configMap:
+#         name: argocd-cmp-cm
+#     - name: custom-tools
+#       emptyDir: {}

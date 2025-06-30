@@ -12,8 +12,6 @@ spec:
     repoURL: 'https://github.com/jjchange10/argocd_practice'
     targetRevision: main
     path: applications/eso-kustomize/overlays
-  plugins:
-    name: kustomize-helmcharts
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
