@@ -14,30 +14,6 @@ if [ $# -ne 2 ]; then
   exit 1
 fi
 
-# Get changed directories from git diff
-changed_dirs=$(git diff --name-only HEAD~1 | xargs -I {} dirname {} | sort -u)
-echo "[INFO] Changed directories: $changed_dirs"
-
-# Extract service names from changed directories (helm only)
-service_names=()
-for dir in $changed_dirs; do
-  # Extract service name from helm path (e.g., helm/nginx -> nginx)
-  if [[ "$dir" =~ ^helm/([^/]+) ]]; then
-    service_name="${BASH_REMATCH[1]}"
-    service_names+=("$service_name")
-  fi
-done
-
-# Remove duplicates
-service_names=($(printf "%s\n" "${service_names[@]}" | sort -u))
-
-if [ ${#service_names[@]} -eq 0 ]; then
-  echo "[INFO] No service changes detected"
-  exit 0
-fi
-
-echo "[INFO] Detected services: ${service_names[*]}"
-
 # Declare allowed stages based on the target environment
 case "${target_env}" in
   stg) allowed_stage_regex='^(stg)$' ;;
