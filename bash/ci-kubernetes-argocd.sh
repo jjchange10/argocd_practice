@@ -1,3 +1,5 @@
+source bash/lib/git.sh
+
 usage() {
   echo ""
   echo "Usage: ${0} WORKDIR ENV(stg|prod)"
@@ -46,7 +48,7 @@ fi
 echo "[INFO] Checking git diff for changed directories"
 
 # 変更されたファイルのリストを取得（メインブランチとの差分）
-changed_files=$(git diff --name-only HEAD~1 HEAD $workdir)
+changed_files=$(get_changed_files $workdir)
 
 if [ -z "$changed_files" ]; then
   echo "[INFO] No changes detected"
@@ -61,11 +63,17 @@ app_files=()
 
 for file in $changed_files; do
   # ファイルのディレクトリパスを取得
-  dir=$(dirname "$file")
+  rest="${file#helm/}"
+  app="${rest%%/*}"
+  echo "app: $app"
   
   # applicationsディレクトリ配下でvaluesFile参照を持つファイルを検索し、ディレクトリのみ取得
-  matching_dirs=$(grep -rl "valuesFile:.*${dir}" applications/ 2>/dev/null | xargs dirname | sort -u)
+  if [ -f "applications/${app}/values.yaml" ]; then
+    matching_dirs=$(grep -rl "name:.*${app}" applications/ 2>/dev/null | xargs dirname | sort -u)
+  fi
 
-  result=$(kustomize build --enable-helm --load-restrictor=LoadRestrictionsNone ${matching_dirs} | kubectl diff -f -)
-  echo "$result"
+  if [ -n "$matching_dirs" ]; then 
+    result=$(kustomize build --enable-helm --load-restrictor=LoadRestrictionsNone ${matching_dirs} | kubectl diff -f -)
+    echo "$result"
+  fi
 done
