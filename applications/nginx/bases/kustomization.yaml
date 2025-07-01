@@ -1,8 +1,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+helmGlobals:
+  chartHome: ../../../helm/nginx
 helmCharts:
   - name: nginx
-    repo: ../../../helm/nginx
     releaseName: nginx
     namespace: default
     valuesFile: ../../../helm/nginx/values.yaml
