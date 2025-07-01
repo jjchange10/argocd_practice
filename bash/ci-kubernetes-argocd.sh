@@ -1,17 +1,20 @@
 source bash/lib/git.sh
+source bash/lib/kustomize.sh
+
+set -x
 
 usage() {
   echo ""
   echo "Usage: ${0} WORKDIR ENV(stg|prod)"
 }
 
-declare workdir="${1}"
-declare target_env="${2}"
+declare workdir="helm"
+declare target_env=$1
 echo "$workdir"
 echo "$target_env"
 pwd
 
-if [ $# -ne 2 ]; then
+if [ $# -ne 1 ]; then
   usage
   exit 1
 fi
@@ -24,6 +27,7 @@ case "${target_env}" in
 esac
 
 
+
 echo "[INFO] Running 'argocd app sync' for changed dirs"
 
 # ArgoCD CLI でログインする
@@ -34,15 +38,15 @@ ARGOCD_SERVER="${ARGOCD_SERVER:-localhost:8080}"
 
 # ArgoCD の管理者パスワードを取得
 
-ARGOCD_PASSWORD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
+# ARGOCD_PASSWORD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
 
-# ArgoCD CLI でログイン
-argocd login "${ARGOCD_SERVER}" --username admin --password "${ARGOCD_PASSWORD}" --insecure
+# # ArgoCD CLI でログイン
+# argocd login "${ARGOCD_SERVER}" --username admin --password "${ARGOCD_PASSWORD}" --insecure
 
-if [ $? -ne 0 ]; then
-  echo "[ERROR] Failed to login to Argo"
-  exit 1
-fi
+# if [ $? -ne 0 ]; then
+#   echo "[ERROR] Failed to login to Argo"
+#   exit 1
+# fi
 
 # Git差分をチェックして変更されたディレクトリを検出
 echo "[INFO] Checking git diff for changed directories"
@@ -58,22 +62,28 @@ fi
 echo "[INFO] Changed files:"
 echo "$changed_files"
 
-# 変更されたディレクトリから対応するアプリケーションファイルを検出
-app_files=()
-
 for file in $changed_files; do
   # ファイルのディレクトリパスを取得
-  rest="${file#helm/}"
-  app="${rest%%/*}"
-  echo "app: $app"
-  
-  # applicationsディレクトリ配下でvaluesFile参照を持つファイルを検索し、ディレクトリのみ取得
-  if [ -f "applications/${app}/values.yaml" ]; then
-    matching_dirs=$(grep -rl "name:.*${app}" applications/ 2>/dev/null | xargs dirname | sort -u)
+  # rest="${file#helm/}"
+  # app="${rest%%/*}"
+  # echo "app: $app"
+  # echo "file: $file"
+  file_pattern="${file}"
+
+  matching_file=$(find ./**/bases/ -name "kustomization.yaml" -exec grep -l "valuesFile:.*${file_pattern}" {} \; 2>&1)
+  echo "Find result: '${matching_file}'"
+  if [ -n "$matching_file" ]; then
+    matching_dirs=$(dirname ${matching_file})
+  else
+    echo "[ERROR] No matching file found for ${app}"
+    continue
   fi
 
   if [ -n "$matching_dirs" ]; then 
-    result=$(kustomize build --enable-helm --load-restrictor=LoadRestrictionsNone ${matching_dirs} | kubectl diff -f -)
+    #(cd ${matching_dirs} && result=$(kubectl_diff) && echo "$result")
+    cd ${matching_dirs}
+    result=$(kubectl_diff)
     echo "$result"
+    cd -
   fi
 done
