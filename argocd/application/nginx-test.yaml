@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: nginx-test
+  name: nginx-kustomize
   namespace: argocd
 spec:
   project: default
@@ -9,15 +9,9 @@ spec:
     server: 'https://kubernetes.default.svc'
     namespace: default
   source:
-    path: helm/nginx
-    repoURL: https://github.com/jjchange10/argocd_practice
+    repoURL: 'https://github.com/jjchange10/argocd_practice'
     targetRevision: main
-    helm:
-      releaseName: nginx-demo
-      valueFiles:
-        - values.yaml
-    
+    path: applications/nginx/overlays
   syncPolicy:
-    automated:
-      selfHeal: true
-      prune: true
+    syncOptions:
+      - CreateNamespace=true
