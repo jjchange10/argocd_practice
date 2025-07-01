@@ -29,7 +29,25 @@ jobs:
     
     - name: Install jq
       run: sudo apt-get update && sudo apt-get install -y jq
+  
     
+    - name: Delete Comments on Pull Request
+      if: github.event_name == 'pull_request'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        PR_NUMBER=1
+        comments=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+                 -X GET \
+                 "https://api.github.com/repos/${{ github.repository }}/issues/1/comments")
+        
+        for comment in $(echo $comments | jq -r '.[] | .url'); do
+          echo $comment
+          curl -s -H "Authorization: token $GITHUB_TOKEN" \
+                 -X DELETE \
+                 $comment
+        done
+
     - name: Comment on Pull Request
       if: github.event_name == 'pull_request'
       env:
@@ -41,19 +59,3 @@ jobs:
              -X POST \
              -d "{\"body\": \"${COMMENT_BODY}\"}" \
              "https://api.github.com/repos/${{ github.repository }}/issues/1/comments"
-    
-    - name: Comment on Pull Request
-      if: github.event_name == 'pull_request'
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        PR_NUMBER=1
-        COMMENT_BODY="Build result: Helloworld"
-        comments=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
-                 -X GET \
-                 "https://api.github.com/repos/${{ github.repository }}/issues/1/comments")
-        
-        for comment in $(echo $comments | jq -r '.[] | .url'); do
-          echo $comment
-        done
-        
