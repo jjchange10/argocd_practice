@@ -38,3 +38,15 @@ jobs:
              -X POST \
              -d "{\"body\": \"${COMMENT_BODY}\"}" \
              "https://api.github.com/repos/${{ github.repository }}/issues/1/comments"
+    
+    - name: Comment on Pull Request
+      if: github.event_name == 'pull_request'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        PR_NUMBER=1
+        COMMENT_BODY="Build result: Helloworld"
+        curl -s -H "Authorization: token $GITHUB_TOKEN" \
+             -X GET \
+             -d "{\"body\": \"${COMMENT_BODY}\"}" \
+             "https://api.github.com/repos/${{ github.repository }}/issues/1/comments"
