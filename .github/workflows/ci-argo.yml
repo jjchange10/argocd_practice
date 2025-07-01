@@ -27,6 +27,9 @@ jobs:
     - name: Print Helloworld
       run: echo "Helloworld"
     
+    - name: Install jq
+      run: sudo apt-get update && sudo apt-get install -y jq
+    
     - name: Comment on Pull Request
       if: github.event_name == 'pull_request'
       env:
@@ -46,7 +49,11 @@ jobs:
       run: |
         PR_NUMBER=1
         COMMENT_BODY="Build result: Helloworld"
-        curl -s -H "Authorization: token $GITHUB_TOKEN" \
-             -X GET \
-             -d "{\"body\": \"${COMMENT_BODY}\"}" \
-             "https://api.github.com/repos/${{ github.repository }}/issues/1/comments"
+        comments=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+                 -X GET \
+                 "https://api.github.com/repos/${{ github.repository }}/issues/1/comments")
+        
+        for comment in $(echo $comments | jq -r '.[] | .url'); do
+          echo $comment
+        done
+        
