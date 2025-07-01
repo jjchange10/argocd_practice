@@ -70,7 +70,7 @@ for file in $changed_files; do
   # echo "file: $file"
   file_pattern="${file}"
 
-  matching_file=$(find ./**/bases/ -name "kustomization.yaml" -exec grep -l "valuesFile:.*${file_pattern}" {} \; 2>&1)
+  matching_file=$(find ./**/overlays/${target_env} -name "kustomization.yaml" -exec grep -l "valuesFile:.*${file_pattern}" {} \; 2>&1)
   echo "Find result: '${matching_file}'"
   if [ -n "$matching_file" ]; then
     matching_dirs=$(dirname ${matching_file})
