@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: 'https://github.com/jjchange10/argocd_practice'
     targetRevision: main
-    path: applications/eso-kustomize/overlays
+    path: applications/eso-kustomize/overlays/stg
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
