@@ -36,10 +36,11 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        PR_NUMBER=1
+        COMMENTS_URL=$(jq -r .pull_request.comments_url "${GITHUB_EVENT_PATH}")
+        echo $COMMENTS_URL
         comments=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
                  -X GET \
-                 "https://api.github.com/repos/${{ github.repository }}/issues/1/comments")
+                 $COMMENTS_URL)
         
         for comment in $(echo $comments | jq -r '.[] | .url'); do
           echo $comment
@@ -53,9 +54,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        PR_NUMBER=1
+        COMMENTS_URL=$(jq -r .pull_request.comments_url "${GITHUB_EVENT_PATH}")
         COMMENT_BODY="Build result: Helloworld"
         curl -s -H "Authorization: token $GITHUB_TOKEN" \
              -X POST \
              -d "{\"body\": \"${COMMENT_BODY}\"}" \
-             "https://api.github.com/repos/${{ github.repository }}/issues/1/comments"
+             $COMMENTS_URL
