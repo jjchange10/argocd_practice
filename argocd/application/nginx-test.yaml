@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: 'https://github.com/jjchange10/argocd_practice'
     targetRevision: main
-    path: applications/nginx/overlays
+    path: applications/nginx/overlays/stg
   syncPolicy:
     syncOptions:
       - CreateNamespace=true

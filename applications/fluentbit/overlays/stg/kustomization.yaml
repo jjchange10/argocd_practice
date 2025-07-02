@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../bases
+
+helmCharts:
+  - name: fluent-bit-collector
+    repo: oci://ghcr.io/stevehipwell/helm-charts/fluent-bit-collector
+    releaseName: fluent-bit-collector
+    namespace: fluent-bit-collector
+    version: 0.17.3
+    valuesFile: ../../../../helm/fluentbit/stg/values.yaml

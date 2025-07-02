@@ -9,9 +9,9 @@ usage() {
 }
 
 declare workdir="helm"
-declare target_env=$1
-echo "$workdir"
-echo "$target_env"
+declare target_env="${1}"
+echo "${workdir}"
+echo "${target_env}"
 pwd
 
 if [ $# -ne 1 ]; then
@@ -52,25 +52,24 @@ ARGOCD_SERVER="${ARGOCD_SERVER:-localhost:8080}"
 echo "[INFO] Checking git diff for changed directories"
 
 # 変更されたファイルのリストを取得（メインブランチとの差分）
-changed_files=$(get_changed_files $workdir)
+changed_files=$(get_changed_files ${workdir})
 
-if [ -z "$changed_files" ]; then
+if [ -z "${changed_files}" ]; then
   echo "[INFO] No changes detected"
   exit 0
 fi
 
 echo "[INFO] Changed files:"
-echo "$changed_files"
+echo "${changed_files}"
 
-for file in $changed_files; do
+for file in ${changed_files}; do
   # ファイルのディレクトリパスを取得
   # rest="${file#helm/}"
   # app="${rest%%/*}"
   # echo "app: $app"
   # echo "file: $file"
-  file_pattern="${file}"
 
-  matching_file=$(find ./**/overlays/${target_env} -name "kustomization.yaml" -exec grep -l "valuesFile:.*${file_pattern}" {} \; 2>&1)
+  matching_file=$(find . -path "*/overlays/${target_env}*" -name "kustomization.yaml" -exec grep -l "valuesFile:.*${file}" {} \; 2>&1)
   echo "Find result: '${matching_file}'"
   if [ -n "$matching_file" ]; then
     matching_dirs=$(dirname ${matching_file})
@@ -79,11 +78,11 @@ for file in $changed_files; do
     continue
   fi
 
-  if [ -n "$matching_dirs" ]; then 
+  if [ -n "${matching_dirs}" ]; then 
     #(cd ${matching_dirs} && result=$(kubectl_diff) && echo "$result")
     cd ${matching_dirs}
     result=$(kubectl_diff)
-    echo "$result"
+    echo "${result}"
     cd -
   fi
 done
