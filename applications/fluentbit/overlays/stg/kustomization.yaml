@@ -9,3 +9,8 @@ helmCharts:
     releaseName: fluent-bit-collector
     namespace: fluent-bit-collector
     version: 0.17.3
+  - name: podinfo
+    repo: oci://ghcr.io/stefanprodan/charts
+    releaseName: podinfo-release
+    namespace: default
+    version: 6.3.5
