@@ -29,6 +29,12 @@ jobs:
     
     - name: Install jq
       run: sudo apt-get update && sudo apt-get install -y jq
+    
+    - uses: asdf-vm/actions/install@v3
+      with:
+        tool_version: |
+          kustomize 5.1.0
+          helm 3.13.0
   
     
     - name: Delete Comments on Pull Request
