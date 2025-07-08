@@ -32,7 +32,7 @@ jobs:
     
     - uses: asdf-vm/actions/install@v3
       with:
-        tool_version: |
+        tool_versions: |
           kustomize 5.1.0
   
     
