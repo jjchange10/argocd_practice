@@ -3,15 +3,14 @@ name: ESO Application CI
 on:
   push:
     branches: [ "main" ]
-    paths:
-      - 'applications/eso.yaml'
-      - 'helm/argocd/eso/**'
   pull_request:
     branches: [ "main" ]
-    paths:
-      - 'applications/eso.yaml'
-      - 'helm/argocd/eso/**'
   workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
 
 jobs:
   validate-helm:
@@ -25,23 +24,45 @@ jobs:
       with:
         version: 3.13.0
     
-    - name: Install Kustomize
-      uses: asdf-vm/actions/install@v3
-      with:
-        tool_version: |
-          kustomize 5.1.0
-    
     - name: Print Helloworld
-      run: echo "Helloworld"
+      run: echo $GITHUB_EVENT_PATH
     
+    - name: Install jq
+      run: sudo apt-get update && sudo apt-get install -y jq
+    
+    - uses: asdf-vm/actions/install@v3
+      with:
+        tool_versions: |
+          kustomize 5.1.0
+          helm 3.18.3
+  
+    
+    - name: Delete Comments on Pull Request
+      if: github.event_name == 'pull_request'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        COMMENTS_URL=$(jq -r .pull_request.comments_url "${GITHUB_EVENT_PATH}")
+        echo $COMMENTS_URL
+        comments=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+                 -X GET \
+                 $COMMENTS_URL)
+        
+        for comment in $(echo $comments | jq -r '.[] | .url'); do
+          echo $comment
+          curl -s -H "Authorization: token $GITHUB_TOKEN" \
+                 -X DELETE \
+                 $comment
+        done
+
     - name: Comment on Pull Request
       if: github.event_name == 'pull_request'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+        COMMENTS_URL=$(jq -r .pull_request.comments_url "${GITHUB_EVENT_PATH}")
         COMMENT_BODY="Build result: Helloworld"
         curl -s -S-H "Authorization: token $GITHUB_TOKEN" \
              -X POST \
              -d "{\"body\": \"${COMMENT_BODY}\"}" \
-             "https://api.github.com/repos/${{ github.repository }}/issues/${PR_NUMBER}/comments"
+             $COMMENTS_URL
