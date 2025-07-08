@@ -34,7 +34,7 @@ jobs:
       with:
         tool_version: |
           kustomize 5.1.0
-          helm 3.13.0
+          helm 3.18.3
   
     
     - name: Delete Comments on Pull Request
