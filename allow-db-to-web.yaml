@@ -1,0 +1,17 @@
+# allow-db-to-web.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-db-to-web
+  namespace: dev-namespace
+spec:
+  podSelector:
+    matchLabels:
+      app: web # このポリシーはweb-podに適用される
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: test # app: db のラベルを持つPodからの通信を許可
