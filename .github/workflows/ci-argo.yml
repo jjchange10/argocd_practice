@@ -62,7 +62,4 @@ jobs:
       run: |
         COMMENTS_URL=$(jq -r .pull_request.comments_url "${GITHUB_EVENT_PATH}")
         COMMENT_BODY="Build result: Helloworld"
-        curl -s -H "Authorization: token $GITHUB_TOKEN" \
-             -X POST \
-             -d "{\"body\": \"${COMMENT_BODY}\"}" \
-             $COMMENTS_URL
+        curl -s -H "Authorization: token $GITHUB_TOKEN" -X POST -d "{\"body\": \"${COMMENT_BODY}\"}" $COMMENTS_URL
