@@ -10,3 +10,8 @@ helmCharts:
     releaseName: external-secrets
     version: v0.18.0
     valuesFile: ../../../../helm/external-secrets/stg/values.yaml
+
+## test
+## test1
+## test2
+## test3
