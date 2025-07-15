@@ -9,3 +9,7 @@ helmCharts:
     releaseName: nginx
     namespace: default
     valuesFile: ../../../../helm/nginx/values.yaml
+  - name: nginx
+    releaseName: nginx-test
+    namespace: nginx
+    valuesFile: ../../../../helm/nginx/values.yaml

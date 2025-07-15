@@ -4,7 +4,7 @@ metadata:
   name: nginx-kustomize
   namespace: argocd
 spec:
-  project: default
+  project: nginx
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: default
