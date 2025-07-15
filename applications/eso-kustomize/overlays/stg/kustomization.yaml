@@ -8,6 +8,7 @@ helmCharts:
   - name: external-secrets
     repo: https://charts.external-secrets.io
     releaseName: external-secrets
+    namespace: external-secrets
     version: v0.18.0
     valuesFile: ../../../../helm/external-secrets/stg/values.yaml
 
