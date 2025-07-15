@@ -10,7 +10,7 @@ helmCharts:
     releaseName: cert-manager
     namespace: cert-manager
     version: v1.18.2
-    valuesFile: ../../../../helm/cert-manager/stg/values.yaml
+    valuesFile: ../../../../helm/cert-manager/values.yaml
 
 ## test
 ## test1
