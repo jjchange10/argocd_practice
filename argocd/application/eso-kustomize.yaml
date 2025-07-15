@@ -4,10 +4,10 @@ metadata:
   name: external-secrets-kustomize
   namespace: argocd
 spec:
-  project: default
+  project: external-secrets
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: external-secrets-kustomize
+    namespace: external-secrets
   source:
     repoURL: 'https://github.com/jjchange10/argocd_practice'
     targetRevision: main

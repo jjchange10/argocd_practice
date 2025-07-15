@@ -6,8 +6,8 @@ metadata:
 spec:
   project: nginx
   destination:
+    namespace: nginx
     server: 'https://kubernetes.default.svc'
-    namespace: default
   source:
     repoURL: 'https://github.com/jjchange10/argocd_practice'
     targetRevision: main
