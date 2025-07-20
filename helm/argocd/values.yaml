@@ -6,6 +6,7 @@ configs:
       username: jjchange10
       type: git
   cm:
+    application.resourceTrackingMethod: "annotation"
     kustomize.buildOptions: "--enable-helm --load-restrictor=LoadRestrictionsNone"
 #   cmp:
 #     create: true

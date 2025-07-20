@@ -1,0 +1,43 @@
+---
+# set ECK Operator configuration options
+# ref. https://artifacthub.io/packages/helm/elastic/eck-operator/2.10.0?modal=values
+managedNamespaces: []
+
+# installCRDs determines whether Custom Resource Definitions (CRD) are installed by the chart.
+# Note that CRDs are global resources and require cluster admin privileges to install.
+# If you are sharing a cluster with other users who may want to install ECK on their own namespaces, setting this to true can have unintended consequences.
+# 1. Upgrades will overwrite the global CRDs and could disrupt the other users of ECK who may be running a different version.
+# 2. Uninstalling the chart will delete the CRDs and potentially cause Elastic resources deployed by other users to be removed as well.  
+installCRDs: false
+
+# To make the validating webhook work under istio, we need to exclude the inbound port 9443 from being proxied.
+# ref. https://www.elastic.co/guide/en/cloud-on-k8s/2.10/k8s-service-mesh-istio.html
+podAnnotations:
+  traffic.sidecar.istio.io/excludeInboundPorts: "9443"
+  traffic.sidecar.istio.io/includeInboundPorts: "*"
+
+replicaCount: 1
+
+resources:
+  requests:
+    cpu: "500m"
+    memory: "512Mi"
+
+# createClusterScopedResources determines whether cluster-scoped resources (ClusterRoles, ClusterRoleBindings) should be created.
+createClusterScopedResources: false
+
+refs:
+  enforceRBAC: false
+
+# Webhook cannot be enabled when cluster-scoped resource creation is disabled.
+webhook:
+  enabled: false
+
+config:
+  logVerbosity: 0
+  elasticsearchClientTimeout: "180s"
+  # Storage class validation cannot be enabled when cluster-scoped resource creation is disabled
+  validateStorageClass: false
+
+global:
+  createOperatorNamespace: false
